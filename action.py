@@ -167,7 +167,7 @@ class Action:
         browse_file = driver.find_element(By.ID, "add_file_browse")
 
         file_select = browse_file.find_elements(By.XPATH, ".//*")[0]
-        file_select.send_keys(self.file_path)
+        file_select.send_keys(os.path.abspath(self.file_path))
 
         print("Waiting for upload to finish...")
         WebDriverWait(driver, 1500).until(
