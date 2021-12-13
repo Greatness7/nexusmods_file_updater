@@ -1,4 +1,5 @@
 import os
+import re
 import time
 
 from selenium import webdriver
@@ -95,9 +96,7 @@ class Action:
         else:
             raise ValueError("Invalid Login")
 
-
-
-    def upload(self, driver):
+    def update(self, driver):
         driver.get(f"https://www.nexusmods.com/{self.game_domain_name}/mods/edit/?id={self.mod_id}&step=files")
 
         # File Name
@@ -134,9 +133,11 @@ class Action:
 
             original_file_options = driver.find_elements(By.CLASS_NAME, "select2-results__option")
             for option in original_file_options:
-                if option.text == self.original_file:
+                if re.search(self.original_file, option.text):
                     option.click()
                     break
+            else:
+                raise ValueError("Original file not found!")
 
             if self.remove_old_version:
                 remove_old_version = driver.find_element(By.NAME, "remove-old-version")
@@ -196,4 +197,4 @@ if __name__ == "__main__":
     action.login(driver)
 
     print("Updating File...")
-    action.upload(driver)
+    action.update(driver)
