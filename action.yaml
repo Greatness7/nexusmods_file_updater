@@ -90,10 +90,13 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - run: pip install -r ${{github.action_path}}/requirements.txt
+      shell: bash
+
     - uses: browser-actions/setup-firefox@latest
+
     - uses: browser-actions/setup-geckodriver@latest
-    - uses: actions/setup-python@v2
-    - run: pip install selenium
+
     - run: python ${{github.action_path}}/action.py
       shell: bash
       env:
