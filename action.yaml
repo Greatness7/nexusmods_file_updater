@@ -1,0 +1,115 @@
+name: "nexusmods_file_updater"
+description: "Automate the process of updating your (nexusmods.com) files."
+inputs:
+  username:
+    description: "The username for your nexus account. Be sure to use github secrets for this!"
+    required: true
+
+  password:
+    description: "The password for your nexus account. Be sure to use github secrets for this!"
+    required: true
+
+  game_domain_name:
+    description: "The game domain name for your mod. Morrowind, Skyrim, etc."
+    required: true
+
+  mod_id:
+    description: "The id of your mod. You can find it in the URL of your mod page."
+    required: true
+
+  file_name:
+    description: "The display name for the file."
+    required: true
+
+  file_version:
+    description: "The version of the file."
+    required: true
+
+  update_version:
+    description: "This is the latest version of the mod."
+    required: false
+    default: false
+
+  file_category:
+    description: |-
+      The file category. Defaults to "Main Files".
+      Must be an extact match to one of the following:
+        "Main Files"
+        "Updates"
+        "Optional files"
+        "Old versions"
+        "Miscellaneous"
+        "Archived"
+    required: false
+    default: "Main Files"
+
+  new_existing_version:
+    description: "This is a new version of an existing file."
+    required: false
+    default: false
+
+  original_file:
+    description: |-
+      If it is a new version of an existing file, specify the original file name and version.
+      Must be an exact match of a pre-existing file name and version (joined by a single space).
+      Example:
+        "My Awesome Mod 1.0.0"
+    required: false
+    default: ""
+
+  remove_old_version:
+    description: "Remove the previous version after this file has been successfully uploaded."
+    required: false
+    default: false
+
+  file_description:
+    description: "This is the description that will accompany the file name on the download page. 255 character limit."
+    required: true
+
+  remove_nmm_button:
+    description: "Remove the 'Download with manager' button"
+    required: false
+    default: false
+
+  set_as_main_nmm:
+    description: "Set the file as the main Vortex file"
+    required: false
+    default: false
+
+  requirements_pop_up:
+    description: "Inform downloaders of this mod's requirements before they attempt to download this file"
+    required: false
+    default: true
+
+  file_path:
+    description: |-
+      Path to the file to be uplodated.
+      Only accepts '.rar', '.zip', '.7z', '.exe', or '.omod' files.
+      The file size limit is 20GB.
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - uses: browser-actions/setup-firefox@latest
+    - uses: browser-actions/setup-geckodriver@latest
+    - uses: actions/setup-python@v2
+    - run: pip install selenium
+    - run: python ${{github.action_path}}/action.py
+      shell: bash
+      env:
+        USERNAME: ${{inputs.username}}
+        PASSWORD: ${{inputs.password}}
+        GAME_DOMAIN_NAME: ${{inputs.game_domain_name}}
+        MOD_ID: ${{inputs.mod_id}}
+        FILE_NAME: ${{inputs.file_name}}
+        FILE_VERSION: ${{inputs.file_version}}
+        UPDATE_VERSION: ${{inputs.update_version}}
+        FILE_CATEGORY: ${{inputs.file_category}}
+        NEW_EXISTING_VERSION: ${{inputs.new_existing_version}}
+        ORIGINAL_FILE: ${{inputs.original_file}}
+        REMOVE_OLD_VERSION: ${{inputs.remove_old_version}}
+        FILE_DESCRIPTION: ${{inputs.file_description}}
+        REMOVE_NMM_BUTTON: ${{inputs.remove_nmm_button}}
+        SET_AS_MAIN_NMM: ${{inputs.set_as_main_nmm}}
+        REQUIREMENTS_POP_UP: ${{inputs.requirements_pop_up}}
+        FILE_PATH: ${{inputs.file_path}}
