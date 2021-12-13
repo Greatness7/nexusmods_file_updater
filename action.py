@@ -88,8 +88,13 @@ class Action:
 
         time.sleep(15)  # wait cloudflare timer
 
-        if driver.find_element(By.XPATH, "//*[contains(text(), 'Invalid Login')]"):
+        try:
+            driver.find_element(By.XPATH, "//*[contains(text(), 'Invalid Login')]")
+        except:
+            print("Login successful!")
+        else:
             raise ValueError("Invalid Login")
+
 
 
     def upload(self, driver):
@@ -163,6 +168,7 @@ class Action:
         file_select = browse_file.find_elements(By.XPATH, ".//*")[0]
         file_select.send_keys(self.file_path)
 
+        print("Waiting for upload to finish...")
         WebDriverWait(driver, 1500).until(
             lambda x: x.find_element(By.ID, "upload_success").is_displayed()
         )
@@ -172,13 +178,22 @@ class Action:
         save_file = driver.find_element(By.ID, "js-save-file")
         save_file.click()
 
+        print("Finished!")
+
 
 if __name__ == "__main__":
+    print("Validating input parameters...")
+    action = Action()
+
+    print("Configuring webdriver options...")
     opt = webdriver.firefox.options.Options()
     opt.headless = True
 
+    print("Starting webdriver...")
     driver = webdriver.Firefox(options=opt)
 
-    action = Action()
+    print("Logging in...")
     action.login(driver)
+
+    print("Updating File...")
     action.upload(driver)
