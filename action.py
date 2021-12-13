@@ -174,7 +174,11 @@ class Action:
 
 
 if __name__ == "__main__":
+    opt = webdriver.firefox.options.Options()
+    opt.headless = True
+
+    driver = webdriver.Firefox(options=opt)
+
     action = Action()
-    driver = webdriver.Firefox()
     action.login(driver)
     action.upload(driver)
