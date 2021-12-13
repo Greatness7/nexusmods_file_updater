@@ -90,7 +90,11 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - run: pip install -r ${{github.action_path}}/requirements.txt
+    - uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'
+
+    - run: pip install selenium
       shell: bash
 
     - uses: browser-actions/setup-firefox@latest
