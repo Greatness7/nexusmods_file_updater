@@ -14,15 +14,15 @@ class Action:
     mod_id: str
     file_name: str
     file_version: str
-    update_version: bool
+    update_version: str
     file_category: str
-    new_existing_version: bool
+    new_existing_version: str
     original_file: str
-    remove_old_version: bool
+    remove_old_version: str
     file_description: str
-    remove_nmm_button: bool
-    set_as_main_nmm: bool
-    requirements_pop_up: bool
+    remove_nmm_button: str
+    set_as_main_nmm: str
+    requirements_pop_up: str
     file_path: str
 
     def __init__(self):
@@ -53,6 +53,14 @@ class Action:
         assert self.file_version, "file_version must not be empty"
         assert self.file_description, "file_description must not be empty"
         assert self.file_path, "file_path must not be empty"
+
+        # yaml sucks, ensure bool inputs are bools
+        assert self.update_version in ("true", "false")
+        assert self.new_existing_version in ("true", "false")
+        assert self.remove_old_version in ("true", "false")
+        assert self.remove_nmm_button in ("true", "false")
+        assert self.set_as_main_nmm in ("true", "false")
+        assert self.requirements_pop_up in ("true", "false")
 
         # ensure it's a valid file category
         assert self.file_category in ("Main Files",
@@ -109,7 +117,7 @@ class Action:
         file_version = driver.find_element(By.NAME, "file-version")
         file_version.send_keys(self.file_version)
 
-        if self.update_version:
+        if self.update_version == "true":
             update_version = driver.find_element(By.NAME, "update-version")
             update_version.click()
 
@@ -124,7 +132,7 @@ class Action:
                 option.click()
                 break
 
-        if self.new_existing_version:
+        if self.new_existing_version == "true":
             new_existing = driver.find_element(By.NAME, "new-existing")
             new_existing.click()
 
@@ -139,7 +147,7 @@ class Action:
             else:
                 raise ValueError("Original file not found!")
 
-            if self.remove_old_version:
+            if self.remove_old_version == "true":
                 remove_old_version = driver.find_element(By.NAME, "remove-old-version")
                 remove_old_version.click()
 
@@ -150,15 +158,15 @@ class Action:
 
         # File Options
 
-        if self.remove_nmm_button:
+        if self.remove_nmm_button == "true":
             remove_nmm_button = driver.find_element(By.NAME, "remove_nmm_button")
             remove_nmm_button.click()
 
-        if self.set_as_main_nmm:
+        if self.set_as_main_nmm == "true":
             set_as_main_nmm = driver.find_element(By.NAME, "set_as_main_nmm")
             set_as_main_nmm.click()
 
-        if not self.requirements_pop_up:
+        if self.requirements_pop_up == "false":
             requirements_pop_up = driver.find_element(By.NAME, "requirements_pop_up")
             requirements_pop_up.click()
 
@@ -169,7 +177,6 @@ class Action:
         file_select = browse_file.find_elements(By.XPATH, ".//*")[0]
         file_select.send_keys(os.path.abspath(self.file_path))
 
-        print("Waiting for upload to finish...")
         WebDriverWait(driver, 1500).until(
             lambda x: x.find_element(By.ID, "upload_success").is_displayed()
         )
