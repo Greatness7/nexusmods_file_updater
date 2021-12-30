@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: greatness7/nexusmods_file_updater@v1
+      - uses: greatness7/nexusmods_file_updater@v2
         with:
           username: ${{secrets.NEXUS_USERNAME}}
           password: ${{secrets.NEXUS_PASSWORD}}
