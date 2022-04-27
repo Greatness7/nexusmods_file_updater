@@ -199,6 +199,7 @@ if __name__ == "__main__":
 
     print("Starting webdriver...")
     driver = webdriver.Firefox(options=opt)
+    driver.implicitly_wait(30)
 
     print("Logging in...")
     action.login(driver)
